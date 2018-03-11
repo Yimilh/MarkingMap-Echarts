@@ -10,9 +10,11 @@
 	<h3>要求</h3>
 	<div>1.申请百度地图开发api</div>
 	<br>
-	<div>2.异步加载数据，获取经纬度 </div>
+	<div>2.json异步加载数据，获取经纬度 </div>
 	<br>
 	<div>3.Echarts绘图在地图上做标记</div>
+	<br>
+	<div>4.使用Bootstrap框架，栅格系统实现适配 </div>
 	<br>
 	<h3>项目流程</h3>
 	<div>前端输入地点/前端渲染->动态更新数据</div>
