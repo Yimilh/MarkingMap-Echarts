@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>myList</title>
+		<link rel="shortcut icon" href="img/1519364018(1).png">
+		<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+		<style type="text/css">
+			body{
+				padding-top:80px;
+			}
+			#InputAddrBtn{
+				margin-top: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Hi 2018,你想去哪里?</h1>
+			<hr>
+			<div class="row">
+				<!-- 输入框 -->
+				<div class="col-md-5 col-xs-5">
+					<div class="form-container">
+				       <div class="form-group">
+				       	<label for="InputAddr">偷偷的告诉你地址</label>
+				       	<input type="text" class="form-control"    id=    "InputAddr" placeholder="   输入地址">
+				       </div>
+				       <button type="submit" id="InputAddrBtn" class="btn btn-primary btn-block" id="btn">确定</button>
+			        </div>
+				</div>
+				<!-- echarts容器 -->
+				<div class="col-md-7 col-xs-7">
+					<div>
+						 <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                        <div id="main" style="width: 600px;height:400px;"></div>
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</body>
+	<script type="text/javascript" src="./js/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/echarts.js"></script>
+	<script type="text/javascript" src="./js/china.js"></script>
+	<script type="text/javascript">
+		//画地图必须要经纬度数据
+		//百度地图开发者密钥 白名单0.0.0.0/0
+		var token ="Znlsi3MsYogq8OitBAtnWwregoGD8D5m";
+		var url="http://api.map.baidu.com/geocoder/v2/?output=json&ak="+token+"&address=";
+		//jq获取DOM
+		var e_input_addr=$("#InputAddr");
+		var e_input_addr_btn=$("#InputAddrBtn");
+		//缓存清单
+		var chart_data=[];
+		//是否加载过
+        
+		//Echarts
+		var my_chart=echarts.init(document.getElementById("main"));
+		//按钮点击事件
+		e_input_addr_btn.click(function(){
+			var place = e_input_addr.val();
+			if (place) {
+					$.getJSON(url+place+"&callback=?",function(res){
+					if (res.status==0) {
+						//push缓存地点
+						loc=res.result.location;
+
+						chart_data.push({
+							name:name,
+							value:[loc.lng,loc.lat],
+							loaded:true
+						});
+						drawmap(place);
+						// drawmap(place,res.result.location);
+						console.log(place,res.result);
+					} else {
+						alert("百度没有找到地图");
+					}
+				});
+				
+			}
+		});
+//echarts根据经纬度画出地图的函数
+function drawmap(name){
+
+    var option = {
+        backgroundColor: '#404a59',
+        title: {
+            text: '208想去的地方~',
+            left:"center",
+            textStyle: {
+                color: '#fff'
+            }
+        },
+        tooltip : {
+            trigger: 'item'
+        },
+        //保存图片
+        toolbox:{
+           show:true,
+           feature:{
+           	    saveAsImage:{
+           	    	show:true
+           	    }
+           }
+        },
+        geo: {
+            map: 'china',
+            label: {
+                emphasis: {
+                    show: false
+                }
+            },
+            roam: true,
+            itemStyle: {
+                normal: {
+                    areaColor: '#323c48',
+                    borderColor: '#111'
+                },
+                emphasis: {
+                    areaColor: '#2a333d'
+                }
+            }
+        },
+        series : [
+            {
+                name: name,
+                type: 'scatter',
+                coordinateSystem: 'geo',
+                data:chart_data,
+                symbolSize: function (val) {
+                    return 10;
+                },
+                label: {
+                    normal: {
+                        formatter: '{b}',
+                        position: 'right',
+                        show: false
+                    },
+                    emphasis: {
+                        show: true
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: '#ddb926'
+                    }
+                }
+         
+            }]
+         };
+         my_chart.setOption(option);
+    }
+	</script>
+</html>
